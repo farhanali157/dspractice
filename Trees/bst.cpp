@@ -26,6 +26,10 @@ public:
         return right;
     }
 
+    void setData(int val){
+        data = val;
+    }
+
     void setLeft(Node* node){
         left = node;
     }
@@ -84,6 +88,42 @@ public:
         cout<<root->getData()<<" ";
     }
 
+    Node* minValueNode(Node* node){
+        Node* current = node;
+        while(current && current->getLeft()!=nullptr){
+            current = current->getLeft();
+        }
+        return current;
+    }
+
+    Node* deleteNode(Node* root, int val){
+        if(root==nullptr){
+            return root;
+        }
+
+        if(val < root->getData()){
+            root->setLeft(deleteNode(root->getLeft(), val));
+        }
+        else if(val > root->getData()){
+            root->setRight(deleteNode(root->getRight(), val));
+        }
+        else{
+            if(root->getLeft()==nullptr){
+                Node* temp = root->getRight();
+                delete root;
+                return temp;
+            }
+            else if(root->getRight()==nullptr){
+                Node* temp = root->getLeft();
+                delete root;
+                return temp;
+            }
+
+            Node* temp = minValueNode(root->getRight());
+            root->setData(temp->getData());
+            root->setRight(deleteNode(root->getRight(), temp->getData()));
+        }
+    }
 };
 
 int main(){
