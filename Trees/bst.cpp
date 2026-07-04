@@ -1,155 +1,144 @@
 #include <iostream>
 using namespace std;
 
-class Node{
+class Node {
 private:
     int data;
     Node* left;
     Node* right;
 
 public:
-    Node(int val){
-        data = val;
-        left = nullptr;
-        right = nullptr;
-    }
+    Node(int val) : data(val), left(nullptr), right(nullptr) {}
 
-    int getData(){
-        return data;
-    }
-
-    Node* getLeft(){
-        return left;
-    }
-
-    Node* getRight(){
-        return right;
-    }
-
-    void setData(int val){
-        data = val;
-    }
-
-    void setLeft(Node* node){
-        left = node;
-    }
-
-    void setRight(Node* node){
-        right = node;
-    }
+    int getData() const { return data; }
+    Node* getLeft() const { return left; }
+    Node* getRight() const { return right; }
+    void setData(int val) { data = val; }
+    void setLeft(Node* node) { left = node; }
+    void setRight(Node* node) { right = node; }
 };
 
-class BST{
+class BST {
 private:
     Node* root;
 
-public:
-    BST(){
-        root = nullptr;
-    }
-
-    Node* getRoot(){
-        return root;
-    }
-
-    void insert(Node* root, int val){
-        if(root == nullptr){
-            root = new Node(val);
+    Node* insertRec(Node* node, int val) {
+        if (node == nullptr) {
+            return new Node(val);
         }
 
-        if(val < root->getData()){
-            insert(root->getLeft(), val);
+        if (val < node->getData()) {
+            node->setLeft(insertRec(node->getLeft(), val));
+        } else if (val > node->getData()) {
+            node->setRight(insertRec(node->getRight(), val));
         }
-        else{
-            insert(root->getRight(), val);
-        }
+
+        return node;
     }
 
-    Node* inorderTraversal(Node* root){
-        if(root==nullptr){
+    void inorderRec(Node* node) const {
+        if (node == nullptr) {
             return;
         }
-        inorderTraversal(root->getLeft());
-        cout<<root->getData()<<" ";
-        inorderTraversal(root->getRight());
+        inorderRec(node->getLeft());
+        cout << node->getData() << " ";
+        inorderRec(node->getRight());
     }
 
-    Node* preorderTraversal(Node* root){
-        if(root==nullptr){
+    void preorderRec(Node* node) const {
+        if (node == nullptr) {
             return;
         }
-        cout<<root->getData()<<" ";
-        preorderTraversal(root->getLeft());
-        preorderTraversal(root->getRight());
+        cout << node->getData() << " ";
+        preorderRec(node->getLeft());
+        preorderRec(node->getRight());
     }
 
-    Node* postorderTraversal(Node* root){
-        if(root==nullptr){
+    void postorderRec(Node* node) const {
+        if (node == nullptr) {
             return;
         }
-        postorderTraversal(root->getLeft());
-        postorderTraversal(root->getRight());
-        cout<<root->getData()<<" ";
+        postorderRec(node->getLeft());
+        postorderRec(node->getRight());
+        cout << node->getData() << " ";
     }
 
-    Node* minValueNode(Node* node){
+    Node* minValueNode(Node* node) const {
         Node* current = node;
-        while(current && current->getLeft()!=nullptr){
+        while (current != nullptr && current->getLeft() != nullptr) {
             current = current->getLeft();
         }
         return current;
     }
 
-    Node* deleteNode(Node* root, int val){
-        if(root==nullptr){
-            return root;
+    Node* deleteRec(Node* node, int val) {
+        if (node == nullptr) {
+            return nullptr;
         }
 
-        if(val < root->getData()){
-            root->setLeft(deleteNode(root->getLeft(), val));
-        }
-        else if(val > root->getData()){
-            root->setRight(deleteNode(root->getRight(), val));
-        }
-        else{
-            if(root->getLeft()==nullptr){
-                Node* temp = root->getRight();
-                delete root;
+        if (val < node->getData()) {
+            node->setLeft(deleteRec(node->getLeft(), val));
+        } else if (val > node->getData()) {
+            node->setRight(deleteRec(node->getRight(), val));
+        } else {
+            if (node->getLeft() == nullptr) {
+                Node* temp = node->getRight();
+                delete node;
                 return temp;
-            }
-            else if(root->getRight()==nullptr){
-                Node* temp = root->getLeft();
-                delete root;
+            } else if (node->getRight() == nullptr) {
+                Node* temp = node->getLeft();
+                delete node;
                 return temp;
             }
 
-            Node* temp = minValueNode(root->getRight());
-            root->setData(temp->getData());
-            root->setRight(deleteNode(root->getRight(), temp->getData()));
+            Node* temp = minValueNode(node->getRight());
+            node->setData(temp->getData());
+            node->setRight(deleteRec(node->getRight(), temp->getData()));
         }
+
+        return node;
     }
+
+    void destroyTree(Node* node) {
+        if (node == nullptr) {
+            return;
+        }
+        destroyTree(node->getLeft());
+        destroyTree(node->getRight());
+        delete node;
+    }
+
+public:
+    BST() : root(nullptr) {}
+    ~BST() { destroyTree(root); }
+
+    void insert(int val) { root = insertRec(root, val); }
+    void inorderTraversal() const { inorderRec(root); }
+    void preorderTraversal() const { preorderRec(root); }
+    void postorderTraversal() const { postorderRec(root); }
+    void deleteNode(int val) { root = deleteRec(root, val); }
 };
 
-int main(){
+int main() {
     BST bst;
-    bst.insert(bst.getRoot(), 50);
-    bst.insert(bst.getRoot(), 30);
-    bst.insert(bst.getRoot(), 70);
-    bst.insert(bst.getRoot(), 20);
-    bst.insert(bst.getRoot(), 40);
-    bst.insert(bst.getRoot(), 60);
-    bst.insert(bst.getRoot(), 80);
+    bst.insert(50);
+    bst.insert(30);
+    bst.insert(70);
+    bst.insert(20);
+    bst.insert(40);
+    bst.insert(60);
+    bst.insert(80);
 
     cout << "Inorder traversal: ";
-    bst.inorderTraversal(bst.getRoot());
+    bst.inorderTraversal();
     cout << endl;
 
     cout << "Preorder traversal: ";
-    bst.preorderTraversal(bst.getRoot());
+    bst.preorderTraversal();
     cout << endl;
 
     cout << "Postorder traversal: ";
-    bst.postorderTraversal(bst.getRoot());
+    bst.postorderTraversal();
     cout << endl;
 
     return 0;
