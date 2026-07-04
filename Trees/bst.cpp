@@ -48,6 +48,10 @@ public:
         root = nullptr;
     }
 
+    Node* getRoot(){
+        return root;
+    }
+
     void insert(Node* root, int val){
         if(root == nullptr){
             root = new Node(val);
@@ -127,7 +131,26 @@ public:
 };
 
 int main(){
+    BST bst;
+    bst.insert(bst.getRoot(), 50);
+    bst.insert(bst.getRoot(), 30);
+    bst.insert(bst.getRoot(), 70);
+    bst.insert(bst.getRoot(), 20);
+    bst.insert(bst.getRoot(), 40);
+    bst.insert(bst.getRoot(), 60);
+    bst.insert(bst.getRoot(), 80);
 
+    cout << "Inorder traversal: ";
+    bst.inorderTraversal(bst.getRoot());
+    cout << endl;
+
+    cout << "Preorder traversal: ";
+    bst.preorderTraversal(bst.getRoot());
+    cout << endl;
+
+    cout << "Postorder traversal: ";
+    bst.postorderTraversal(bst.getRoot());
+    cout << endl;
 
     return 0;
 }
