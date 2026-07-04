@@ -57,6 +57,33 @@ public:
         }
     }
 
+    Node* inorderTraversal(Node* root){
+        if(root==nullptr){
+            return;
+        }
+        inorderTraversal(root->getLeft());
+        cout<<root->getData()<<" ";
+        inorderTraversal(root->getRight());
+    }
+
+    Node* preorderTraversal(Node* root){
+        if(root==nullptr){
+            return;
+        }
+        cout<<root->getData()<<" ";
+        preorderTraversal(root->getLeft());
+        preorderTraversal(root->getRight());
+    }
+
+    Node* postorderTraversal(Node* root){
+        if(root==nullptr){
+            return;
+        }
+        postorderTraversal(root->getLeft());
+        postorderTraversal(root->getRight());
+        cout<<root->getData()<<" ";
+    }
+
 };
 
 int main(){
