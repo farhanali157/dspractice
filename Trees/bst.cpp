@@ -33,7 +33,29 @@ public:
     void setRight(Node* node){
         right = node;
     }
+};
 
+class BST{
+private:
+    Node* root;
+
+public:
+    BST(){
+        root = nullptr;
+    }
+
+    void insert(Node* root, int val){
+        if(root == nullptr){
+            root = new Node(val);
+        }
+
+        if(val < root->getData()){
+            insert(root->getLeft(), val);
+        }
+        else{
+            insert(root->getRight(), val);
+        }
+    }
 
 };
 
